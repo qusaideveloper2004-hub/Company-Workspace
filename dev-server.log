@@ -1,0 +1,80 @@
+
+> company-workspace@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.10:3000
+- Environments: .env
+✓ Ready in 1187ms
+✓ Running next.config.ts took 89ms
+Creating turbopack project { dir: 'C:\\Users\\Qusai Essam\\company-workspace', testMode: true }
+
+○ Compiling /tickets/new ...
+Attention: Clerk collects telemetry data from its SDKs when connected to development instances.
+The data collected is used to inform Clerk's product roadmap.
+To learn more, including how to opt-out from the telemetry program, visit: https://clerk.com/docs/telemetry.
+
+○ Compiling / ...
+ GET / 200 in 4.5s (next.js: 4.0s, proxy.ts: 62ms, application-code: 437ms)
+○ Compiling /dashboard ...
+ GET /dashboard 200 in 6.7s (next.js: 4.6s, proxy.ts: 14ms, application-code: 2.1s)
+ GET /dashboard 200 in 1060ms (next.js: 10ms, proxy.ts: 19ms, application-code: 1031ms)
+ GET /tickets 200 in 978ms (next.js: 776ms, proxy.ts: 20ms, application-code: 183ms)
+ GET /tickets/new 200 in 69ms (next.js: 12ms, proxy.ts: 22ms, application-code: 35ms)
+ POST /api/tickets 201 in 1869ms (next.js: 771ms, proxy.ts: 13ms, application-code: 1084ms)
+ GET /tickets 200 in 253ms (next.js: 24ms, proxy.ts: 13ms, application-code: 216ms)
+ GET /tickets 200 in 679ms (next.js: 45ms, proxy.ts: 14ms, application-code: 621ms)
+ GET /tickets 200 in 2.5s (next.js: 34ms, proxy.ts: 1032ms, application-code: 1394ms)
+ GET /tickets 200 in 2.4s (next.js: 49ms, proxy.ts: 465ms, application-code: 1861ms)
+ GET /tasks 200 in 3.5s (next.js: 3.0s, proxy.ts: 26ms, application-code: 454ms)
+ GET /tasks 200 in 996ms (next.js: 77ms, proxy.ts: 49ms, application-code: 871ms)
+ GET /tasks/new 200 in 1895ms (next.js: 1752ms, proxy.ts: 27ms, application-code: 116ms)
+ GET /api/employees 200 in 1154ms (next.js: 882ms, proxy.ts: 33ms, application-code: 238ms)
+ GET /api/employees 200 in 150ms (next.js: 13ms, proxy.ts: 33ms, application-code: 103ms)
+ POST /api/tasks 201 in 2.3s (next.js: 1234ms, proxy.ts: 48ms, application-code: 1028ms)
+ GET /tasks 200 in 428ms (next.js: 42ms, proxy.ts: 33ms, application-code: 352ms)
+ GET /tasks 200 in 899ms (next.js: 107ms, proxy.ts: 34ms, application-code: 758ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 28.2s (next.js: 26.6s, proxy.ts: 29ms, application-code: 1545ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 4.4s (next.js: 2.9s, proxy.ts: 26ms, application-code: 1547ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 3.1s (next.js: 1512ms, proxy.ts: 37ms, application-code: 1548ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 2.5s (next.js: 933ms, proxy.ts: 33ms, application-code: 1550ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 2.3s (next.js: 720ms, proxy.ts: 26ms, application-code: 1551ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 957ms (next.js: 84ms, proxy.ts: 39ms, application-code: 834ms)
+ GET /tasks/cmth8g5n8000174fgndv1cbfr 200 in 320ms (next.js: 54ms, proxy.ts: 33ms, application-code: 233ms)
+ DELETE /api/tasks/cmth8g5n8000174fgndv1cbfr 200 in 4.9s (next.js: 4.1s, proxy.ts: 36ms, application-code: 733ms)
+ GET /tasks 200 in 345ms (next.js: 79ms, proxy.ts: 27ms, application-code: 239ms)
+ GET /tasks/new 200 in 1088ms (next.js: 65ms, proxy.ts: 877ms, application-code: 146ms)
+ GET /api/employees 200 in 1436ms (next.js: 21ms, proxy.ts: 33ms, application-code: 1382ms)
+ GET /api/employees 200 in 111ms (next.js: 8ms, proxy.ts: 19ms, application-code: 84ms)
+ POST /api/tasks 201 in 1113ms (next.js: 73ms, proxy.ts: 17ms, application-code: 1023ms)
+ GET /tasks 200 in 244ms (next.js: 20ms, proxy.ts: 19ms, application-code: 204ms)
+ GET /tasks 200 in 662ms (next.js: 10ms, proxy.ts: 9ms, application-code: 643ms)
+ GET /tasks/new 200 in 252ms (next.js: 13ms, proxy.ts: 13ms, application-code: 227ms)
+ GET /api/employees 200 in 639ms (next.js: 15ms, proxy.ts: 16ms, application-code: 608ms)
+ GET /api/employees 200 in 120ms (next.js: 22ms, proxy.ts: 16ms, application-code: 81ms)
+ POST /api/tasks 201 in 940ms (next.js: 7ms, proxy.ts: 21ms, application-code: 912ms)
+ GET /tasks 200 in 229ms (next.js: 11ms, proxy.ts: 26ms, application-code: 193ms)
+ GET /tasks 200 in 648ms (next.js: 13ms, proxy.ts: 12ms, application-code: 623ms)
+ GET /tasks/new 200 in 58ms (next.js: 11ms, proxy.ts: 22ms, application-code: 25ms)
+ GET /api/employees 200 in 103ms (next.js: 8ms, proxy.ts: 13ms, application-code: 82ms)
+ GET /api/employees 200 in 97ms (next.js: 6ms, proxy.ts: 12ms, application-code: 79ms)
+ GET /tasks/new 200 in 110ms (next.js: 15ms, proxy.ts: 13ms, application-code: 82ms)
+ GET /api/employees 200 in 117ms (next.js: 12ms, proxy.ts: 21ms, application-code: 84ms)
+ GET /api/employees 200 in 100ms (next.js: 10ms, proxy.ts: 11ms, application-code: 79ms)
+ GET /tasks 200 in 194ms (next.js: 9ms, proxy.ts: 10ms, application-code: 175ms)
+ GET /tasks/new 200 in 55ms (next.js: 10ms, proxy.ts: 16ms, application-code: 29ms)
+ GET /api/employees 200 in 115ms (next.js: 6ms, proxy.ts: 27ms, application-code: 82ms)
+ GET /api/employees 200 in 98ms (next.js: 6ms, proxy.ts: 15ms, application-code: 77ms)
+ POST /api/tasks 201 in 959ms (next.js: 7ms, proxy.ts: 19ms, application-code: 933ms)
+ GET /tasks 200 in 202ms (next.js: 14ms, proxy.ts: 16ms, application-code: 172ms)
+ GET /tasks 200 in 657ms (next.js: 48ms, proxy.ts: 15ms, application-code: 594ms)
+ GET /tasks/new 200 in 54ms (next.js: 10ms, proxy.ts: 17ms, application-code: 27ms)
+ GET /api/employees 200 in 508ms (next.js: 5ms, proxy.ts: 15ms, application-code: 487ms)
+ GET /api/employees 200 in 98ms (next.js: 8ms, proxy.ts: 10ms, application-code: 80ms)
+ POST /api/tasks 201 in 928ms (next.js: 6ms, proxy.ts: 10ms, application-code: 913ms)
+ GET /tasks 200 in 245ms (next.js: 21ms, proxy.ts: 12ms, application-code: 212ms)
+ GET /tasks 200 in 664ms (next.js: 41ms, proxy.ts: 13ms, application-code: 610ms)
+ GET /tasks/new 200 in 64ms (next.js: 13ms, proxy.ts: 22ms, application-code: 30ms)
+ GET /api/employees 200 in 108ms (next.js: 8ms, proxy.ts: 19ms, application-code: 81ms)
+ GET /api/employees 200 in 105ms (next.js: 6ms, proxy.ts: 20ms, application-code: 79ms)

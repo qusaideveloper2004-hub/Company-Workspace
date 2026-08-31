@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EmployeeDepartment {
+  engineering
+  sales
+  marketing
+  hr
+  finance
+}
+
+enum EmployeeRole {
+  admin
+  manager
+  employee
+}
+
+enum EmployeeStatus {
+  active
+  inactive
+}
+
+model Employee {
+  id         String             @id @default(cuid())
+  name       String
+  email      String             @unique
+  role       EmployeeRole       @default(employee)
+  department EmployeeDepartment
+  position   String
+  status     EmployeeStatus     @default(active)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  createdTickets       Ticket[]        @relation("CreatedTickets")
+  assignedTasks        Task[]          @relation("AssignedTasks")
+  createdAnnouncements Announcement[]  @relation("CreatedAnnouncements")
+  preferences          UserPreference?
+  clerkUserId          String?         @unique
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  resolved
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+model Ticket {
+  id                  String             @id @default(cuid())
+  title               String
+  description         String
+  status              TicketStatus       @default(open)
+  priority            TicketPriority
+  department          EmployeeDepartment
+  createdByEmployeeId String
+  createdBy           Employee           @relation("CreatedTickets", fields: [createdByEmployeeId], references: [id])
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  completed
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+model Task {
+  id                 String             @id @default(cuid())
+  title              String
+  description        String
+  status             TaskStatus         @default(todo)
+  priority           TaskPriority
+  department         EmployeeDepartment
+  assignedEmployeeId String
+  assignedEmployee   Employee           @relation("AssignedTasks", fields: [assignedEmployeeId], references: [id])
+  dueDate            DateTime
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+enum AnnouncementPriority {
+  low
+  medium
+  high
+}
+
+model Announcement {
+  id                  String               @id @default(cuid())
+  title               String
+  content             String
+  priority            AnnouncementPriority @default(medium)
+  createdByEmployeeId String
+  createdBy           Employee             @relation("CreatedAnnouncements", fields: [createdByEmployeeId], references: [id])
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+enum Theme {
+  light
+  dark
+  system
+}
+
+model CompanySettings {
+  id                    String         @id @default("company")
+  companyName           String
+  companyEmail          String
+  defaultTicketPriority TicketPriority @default(medium)
+  defaultTaskStatus     TaskStatus     @default(todo)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model UserPreference {
+  id                 String   @id @default(cuid())
+  employeeId         String   @unique
+  employee           Employee @relation(fields: [employeeId], references: [id])
+  phoneNumber        String?
+  theme              Theme    @default(light)
+  emailNotifications Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
