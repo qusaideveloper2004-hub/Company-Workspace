@@ -1,62 +1,168 @@
 # Company Workspace
 
-An internal company portal, built as a growing product — not a one-time tutorial project.
+An internal company workspace for managing employees, tasks, support tickets, announcements, company settings, and reports.
 
-## Current status
+Built with Next.js, TypeScript, Prisma, Neon PostgreSQL, and Clerk authentication.
 
-Only the **Tickets** module is being actively built (by you, step by step).
-Every other module below exists only as a placeholder route so the product feels complete from day one. Each will be unlocked as new Next.js topics are learned.
+## Live Demo
 
-| Module | Route | Status |
-|---|---|---|
-| Dashboard | `/dashboard` | 🔒 Placeholder |
-| Employees | `/employees` | 🔒 Placeholder |
-| **Tickets** | `/tickets` | 🚧 **Empty — build this next** |
-| Tasks | `/tasks` | 🔒 Placeholder |
-| Announcements | `/announcements` | 🔒 Placeholder |
-| Reports | `/reports` | 🔒 Placeholder |
-| Settings | `/settings` | 🔒 Placeholder |
+https://company-workspace-git-main-qusai-e-project1.vercel.app/
 
-## Folder structure
+<!-- Add the deployed project link here. -->
 
-```
+## Screenshots
+
+![Dashboard](./Images-Project/dashboard.png)
+
+![Employees](./Images-Project/Employees.png)
+
+![tickets](./Images-Project/Tickets.png)
+
+![tasks](./Images-Project/Tasks.png)
+
+## Features
+
+- Employee management with departments, roles, and account status.
+- Task management: create, assign, update status, and delete tasks.
+- Ticket management linked automatically to the signed-in employee.
+- Company announcements with priorities.
+- Company settings and individual user preferences.
+- Dashboard and reports based on real database data.
+- Clerk authentication linked to employee records in Neon.
+- Role-based task permissions for `admin`, `manager`, and `employee` roles.
+
+## Task Permissions
+
+| Action             | Admin        | Manager                       | Employee            |
+| ------------------ | ------------ | ----------------------------- | ------------------- |
+| Create tasks       | Any employee | Employees in their department | Not allowed         |
+| Update task status | Any task     | Tasks in their department     | Only assigned tasks |
+| Delete tasks       | Any task     | Tasks in their department     | Not allowed         |
+
+Inactive employees and Clerk accounts that are not linked to an employee record cannot create, update, or delete tasks.
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) 16
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Prisma ORM](https://www.prisma.io/)
+- [Neon PostgreSQL](https://neon.tech/)
+- [Clerk](https://clerk.com/)
+- [Recharts](https://recharts.org/)
+
+## Project Structure
+
+```text
 app/
-├── layout.tsx                 Root layout
-├── page.tsx                   Public entry page ("Enter Workspace")
-│
-├── (dashboard)/                Route group — shared Sidebar + Navbar
-│   ├── layout.tsx
-│   ├── dashboard/page.tsx      Placeholder
-│   ├── employees/page.tsx      Placeholder
-│   ├── tickets/                 ← EMPTY. Build this module here.
-│   ├── tasks/page.tsx          Placeholder
-│   ├── announcements/page.tsx  Placeholder
-│   ├── reports/page.tsx        Placeholder
-│   └── settings/page.tsx       Placeholder
-│
-└── api/                         ← EMPTY. Route Handlers go here.
-
-lib/
-├── modules/                     ← EMPTY. Data layer per module (e.g. modules/tickets/data.ts).
-└── types/                       ← EMPTY. Shared TypeScript types (e.g. types/ticket.ts).
+├── (dashboard)/       # Dashboard pages and shared dashboard layout
+├── api/               # Route handlers and protected server operations
+└── layout.tsx         # Root layout and Clerk provider
 
 components/
+├── announcements/
+├── dashboard/
+├── employees/
 ├── layout/
-│   ├── Sidebar.tsx              Navigation for every module (active + "SOON" badges)
-│   └── Navbar.tsx                Top bar, derives page title from the route
-└── ui/                           ← EMPTY. Reusable UI primitives, as needed.
+├── settings/
+├── tasks/
+└── tickets/
+
+lib/
+├── modules/            # Prisma data functions grouped by feature
+├── types/              # Shared TypeScript types
+├── current-employee.ts # Clerk-to-Employee linking helper
+└── prisma.ts           # Prisma client setup
+
+prisma/
+├── migrations/         # Database migration history
+└── schema.prisma       # Database models and enums
 ```
 
-## Why this structure
+## Getting Started
 
-- **One product, many modules** — not a separate project per feature. Shared layout, shared navigation, shared data conventions.
-- **Route Groups** (`(dashboard)`) group pages that share a layout without affecting the URL.
-- **`lib/modules/<name>/`** keeps each module's data layer isolated, so adding a database later means adding files, not restructuring the project.
-- **Placeholders are real routes**, not comments — the product feels whole from day one, and each module unlocks in place as new topics are learned (Database, Auth, Server Actions, Uploads, Streaming, etc.) without changing the overall architecture.
+### 1. Clone the repository
 
-## Run it
+```bash
+git clone git@github.com:qusaideveloper2004-hub/Company-Workspace.git
+cd Company-Workspace
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
+```
+
+### 3. Create environment variables
+
+Create a `.env` file in the project root:
+
+```env
+DATABASE_URL="your_neon_database_url"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
+CLERK_SECRET_KEY="your_clerk_secret_key"
+```
+
+Never commit `.env` to GitHub.
+
+### 4. Apply database migrations and generate Prisma Client
+
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+### 5. Start the development server
+
+```bash
 npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Available Scripts
+
+```bash
+npm run dev       # Start the development server
+npm run build     # Create a production build
+npm run start     # Start the production server
+npm run lint      # Run ESLint
+npx prisma generate
+npx prisma migrate deploy
+```
+
+## Database Models
+
+The project uses PostgreSQL through Neon with the following main models:
+
+- `Employee`
+- `Task`
+- `Ticket`
+- `Announcement`
+- `CompanySettings`
+- `UserPreference`
+
+`Employee.clerkUserId` connects a Clerk account to its matching employee record in the database.
+
+## Current Development Status
+
+Completed:
+
+- Database migration from static data to Neon PostgreSQL.
+- Prisma data layer and API routes for core modules.
+- Clerk-to-Employee linking.
+- Task authorization for roles and departments.
+
+Planned improvements:
+
+- Authorization for Tickets, Announcements, Employees, and Settings.
+- Zod validation for API request data.
+- Applying saved theme preferences to the UI.
+- More detailed reports.
+- Production deployment.
+
+## Author
+
+Built by [Qusai Essam](https://github.com/qusaideveloper2004-hub).
