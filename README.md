@@ -16,9 +16,9 @@ https://company-workspace-git-main-qusai-e-project1.vercel.app/
 
 ![Employees](./Images-Project/Employees.png)
 
-![tickets](./Images-Project/Tickets.png)
+![Tasks](./Images-Project/Tasks.png)
 
-![tasks](./Images-Project/Tasks.png)
+![Tickets](./Images-Project/Tickets.png)
 
 ## Features
 
