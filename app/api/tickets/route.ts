@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 // import { auth } from "@clerk/nextjs/server";
 import { getCurrentEmployee } from "@/lib/current-employee";
-import { createTicket, getAllTickets } from "@/lib/modules/tickets/data";
+import {
+  createTicket,
+  getVisibleTickets,
+} from "@/lib/modules/tickets/data";
 import type {
   CreateTicketInput,
   Department,
@@ -10,9 +13,28 @@ import type {
 } from "@/lib/types/ticket";
 
 export async function GET(request: NextRequest) {
+  const currentEmployee = await getCurrentEmployee();
+
+  if (!currentEmployee) {
+    return NextResponse.json(
+      {
+        error:
+          "Your account is not linked to an employee record.",
+      },
+      { status: 403 }
+    );
+  }
+
+  if (currentEmployee.status !== "active") {
+    return NextResponse.json(
+      { error: "Your employee account is inactive." },
+      { status: 403 }
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
 
-  const tickets = await getAllTickets({
+  const tickets = await getVisibleTickets(currentEmployee, {
     status: (searchParams.get("status") ?? undefined) as
       | TicketStatus
       | undefined,
@@ -43,6 +65,17 @@ export async function POST(request: NextRequest) {
         {
           status: 403,
         },
+      );
+    }
+
+    if (currentEmployee.status !== "active") {
+      return NextResponse.json(
+        {
+          error: "Your employee account is inactive.",
+        },
+        {
+          status: 403,
+        }
       );
     }
 

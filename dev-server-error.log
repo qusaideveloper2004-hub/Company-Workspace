@@ -33,3 +33,13 @@ See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode de
 [browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)
 [browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)
 [browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)
+[browser] Failed to fetch RSC payload for http://localhost:3000/tickets. Falling back to browser navigation. TypeError: Failed to fetch
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2937284501'
+}
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)
+[browser] Failed to fetch RSC payload for http://localhost:3000/tickets. Falling back to browser navigation. TypeError: Failed to fetch
+[browser] Failed to fetch RSC payload for http://localhost:3000/tickets. Falling back to browser navigation. TypeError: Failed to fetch
+[browser] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview (https://growing-glowworm-61.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js:12:7821)

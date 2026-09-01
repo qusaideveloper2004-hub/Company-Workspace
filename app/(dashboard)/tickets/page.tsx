@@ -1,6 +1,12 @@
+// 
+
+
 import Link from "next/link";
 
-import { getAllTickets } from "@/lib/modules/tickets/data";
+import { getCurrentEmployee } from "@/lib/current-employee";
+import {
+  getVisibleTickets,
+} from "@/lib/modules/tickets/data";
 import type { TicketStatus } from "@/lib/types/ticket";
 
 interface TicketsPageProps {
@@ -22,9 +28,49 @@ const statusFilters: {
 export default async function TicketsPage({
   searchParams,
 }: TicketsPageProps) {
+  // 1) نأخذ فلتر الحالة من الرابط، مثل:
+  // /tickets?status=open
   const params = await searchParams;
   const status = params.status as TicketStatus | undefined;
-  const tickets = await getAllTickets({ status });
+
+  // 2) نعرف الموظف الحالي من Clerk ثم Neon.
+  const currentEmployee = await getCurrentEmployee();
+
+  // 3) لا نعرض بيانات لأي حساب غير مربوط بـ Employee.
+  if (!currentEmployee) {
+    return (
+      <div className="p-6">
+        <h1 className="text-xl font-semibold text-foreground">
+          Tickets
+        </h1>
+
+        <p className="mt-4 text-sm text-muted">
+          Your account is not linked to an employee record.
+        </p>
+      </div>
+    );
+  }
+
+  // 4) لا نعرض بيانات للحساب غير النشط.
+  if (currentEmployee.status !== "active") {
+    return (
+      <div className="p-6">
+        <h1 className="text-xl font-semibold text-foreground">
+          Tickets
+        </h1>
+
+        <p className="mt-4 text-sm text-muted">
+          Your employee account is inactive.
+        </p>
+      </div>
+    );
+  }
+
+  // 5) نطلب فقط Tickets التي يسمح دور الموظف برؤيتها.
+  const tickets = await getVisibleTickets(
+    currentEmployee,
+    { status }
+  );
 
   return (
     <div className="p-6">
@@ -51,6 +97,7 @@ export default async function TicketsPage({
         {statusFilters.map((filter) => {
           const isActive =
             (params.status ?? undefined) === filter.value;
+
           const href = filter.value
             ? `/tickets?status=${filter.value}`
             : "/tickets";
