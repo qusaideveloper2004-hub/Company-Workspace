@@ -102,7 +102,10 @@ import {
   NextResponse,
 } from "next/server";
 
-import { auth } from "@clerk/nextjs/server";
+// import { auth } from "@clerk/nextjs/server";
+import { getCurrentEmployee } from "@/lib/current-employee";
+import { canCreateAnnouncement } from "@/lib/permissions/announcements";
+
 
 import {
   AnnouncementPriority,
@@ -113,14 +116,31 @@ import {
   getAllAnnouncementsFromDatabase,
 } from "@/lib/modules/announcements/data";
 
+
 interface CreateAnnouncementRequest {
   title: string;
   content: string;
   priority: AnnouncementPriority;
-  createdByEmployeeId: string;
 }
 
 export async function GET() {
+
+const currentEmployee = await getCurrentEmployee();
+
+  if (!currentEmployee) {
+    return NextResponse.json(
+      { error: "Employee not found" },
+      { status: 404 }
+    );
+  }
+
+  if (currentEmployee.status !== "active") {
+    return NextResponse.json(
+      { error: "Your account is not active" },
+      { status: 403 }
+    );
+  }
+
   const announcements =
     await getAllAnnouncementsFromDatabase();
 
@@ -128,14 +148,38 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { userId } = await auth();
+  // const { userId } = await auth();
+  const currentEmployee = await getCurrentEmployee();
 
-  if (!userId) {
+  if (!currentEmployee) {
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
+      { error: "Employee not found" },
+      { status: 404 }
     );
   }
+
+  if (currentEmployee.status !== "active") {
+    return NextResponse.json(
+      { error: "Your account is not active" },
+      { status: 403 }
+    );
+  }
+
+  if (!canCreateAnnouncement(currentEmployee.role)) {
+    return NextResponse.json(
+      { error: "You are not allowed to create announcements" },
+      { status: 403 }
+    );
+  }
+
+
+
+  // if (!userId) {
+  //   return NextResponse.json(
+  //     { error: "Unauthorized" },
+  //     { status: 401 }
+  //   );
+  // }
 
   const body: CreateAnnouncementRequest =
     await request.json();
@@ -143,8 +187,8 @@ export async function POST(request: NextRequest) {
   if (
     !body.title ||
     !body.content ||
-    !body.priority ||
-    !body.createdByEmployeeId
+    !body.priority 
+    // !body.createdByEmployeeId
   ) {
     return NextResponse.json(
       { error: "All fields are required." },
@@ -157,7 +201,8 @@ export async function POST(request: NextRequest) {
       body.title,
       body.content,
       body.priority,
-      body.createdByEmployeeId
+        // body.createdByEmployeeId
+      currentEmployee.id
     );
 
   return NextResponse.json(announcement, {

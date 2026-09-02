@@ -14,7 +14,6 @@ export interface CreateAnnouncementInput {
   title: string;
   content: string;
   priority: AnnouncementPriority;
-  createdBy: string;
 }
 
 

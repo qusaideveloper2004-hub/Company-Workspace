@@ -1,25 +1,19 @@
-// import { NextRequest, NextResponse } from "next/server";
+
+// import {
+//   NextRequest,
+//   NextResponse,
+// } from "next/server";
+
 // import { auth } from "@clerk/nextjs/server";
 
-// // import {
-// //   getUserById,
-// // } from "@/lib/modules/users/data";
 
 // import {
-//   getEmployeeById,
-// } from "@/lib/modules/employees/data";
+//   AnnouncementPriority,
+// } from "@/lib/generated/prisma/client";
 
 // import {
-//   getAnnouncementById,
-//   updateAnnouncement,
-// } from "@/lib/modules/announcements/data";
-
-// import {
-//   UpdateAnnouncementInput,
-// } from "@/lib/types/announcement";
-
-// import { 
-//     deleteAnnouncement 
+//   updateAnnouncementPriorityFromDatabase,
+//   deleteAnnouncementFromDatabase
 // } from "@/lib/modules/announcements/data";
 
 // interface AnnouncementRouteProps {
@@ -32,8 +26,6 @@
 //   request: NextRequest,
 //   { params }: AnnouncementRouteProps
 // ) {
-//   const { id } = await params;
-
 //   const { userId } = await auth();
 
 //   if (!userId) {
@@ -43,62 +35,40 @@
 //     );
 //   }
 
-//   const employee = await getEmployeeById(userId);
+//   const { id } = await params;
 
-//   if (!employee) {
+//   const body: {
+//     priority?: AnnouncementPriority;
+//   } = await request.json();
+
+//   if (!body.priority) {
 //     return NextResponse.json(
-//       { error: "Employee not found" },
-//       { status: 404 }
+//       { error: "Priority is required." },
+//       { status: 400 }
 //     );
 //   }
 
-//   if (
-//     employee.role !== "admin" &&
-//     employee.role !== "manager"
-//   ) {
-//     return NextResponse.json(
-//       {
-//         error:
-//           "You are not allowed to update announcements",
-//       },
-//       { status: 403 }
+//   const updatedAnnouncement =
+//     await updateAnnouncementPriorityFromDatabase(
+//       id,
+//       body.priority
 //     );
-//   }
 
-//   const announcement = getAnnouncementById(id);
-
-//   if (!announcement) {
+//   if (!updatedAnnouncement) {
 //     return NextResponse.json(
 //       { error: "Announcement not found" },
 //       { status: 404 }
 //     );
 //   }
-
-//   const body: UpdateAnnouncementInput =
-//     await request.json();
-
-//   if (!body.priority) {
-//     return NextResponse.json(
-//       { error: "priority is required" },
-//       { status: 400 }
-//     );
-//   }
-
-//   const updatedAnnouncement = updateAnnouncement(
-//     id,
-//     body
-//   );
 
 //   return NextResponse.json(updatedAnnouncement);
 // }
 
 
 // export async function DELETE(
-//   request: NextRequest,
+//   _request: NextRequest,
 //   { params }: AnnouncementRouteProps
 // ) {
-//   const { id } = await params;
-
 //   const { userId } = await auth();
 
 //   if (!userId) {
@@ -108,49 +78,19 @@
 //     );
 //   }
 
-//   const employee = await getEmployeeById(userId);
+//   const { id } = await params;
 
-//   if (!employee) {
-//     return NextResponse.json(
-//       { error: "Employee not found" },
-//       { status: 404 }
-//     );
-//   }
+//   const deletedAnnouncement =
+//     await deleteAnnouncementFromDatabase(id);
 
-//   if (
-//     employee.role !== "admin" &&
-//     employee.role !== "manager"
-//   ) {
-//     return NextResponse.json(
-//       {
-//         error:
-//           "You are not allowed to delete announcements",
-//       },
-//       { status: 403 }
-//     );
-//   }
-
-//   const announcement = getAnnouncementById(id);
-
-//   if (!announcement) {
+//   if (!deletedAnnouncement) {
 //     return NextResponse.json(
 //       { error: "Announcement not found" },
 //       { status: 404 }
 //     );
 //   }
 
-//   const deleted = deleteAnnouncement(id);
-
-//   if (!deleted) {
-//     return NextResponse.json(
-//       { error: "Failed to delete announcement" },
-//       { status: 500 }
-//     );
-//   }
-
-//   return NextResponse.json({
-//     message: "Announcement deleted successfully",
-//   });
+//   return NextResponse.json(deletedAnnouncement);
 // }
 
 
@@ -159,16 +99,20 @@ import {
   NextResponse,
 } from "next/server";
 
-import { auth } from "@clerk/nextjs/server";
-
 import {
   AnnouncementPriority,
 } from "@/lib/generated/prisma/client";
 
 import {
   updateAnnouncementPriorityFromDatabase,
-  deleteAnnouncementFromDatabase
+  deleteAnnouncementFromDatabase,
 } from "@/lib/modules/announcements/data";
+
+import { getCurrentEmployee } from "@/lib/current-employee";
+import {
+  canDeleteAnnouncement,
+  canUpdateAnnouncement,
+} from "@/lib/permissions/announcements";
 
 interface AnnouncementRouteProps {
   params: Promise<{
@@ -180,12 +124,29 @@ export async function PUT(
   request: NextRequest,
   { params }: AnnouncementRouteProps
 ) {
-  const { userId } = await auth();
+  const currentEmployee = await getCurrentEmployee();
 
-  if (!userId) {
+  if (!currentEmployee) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
+    );
+  }
+
+  if (currentEmployee.status !== "active") {
+    return NextResponse.json(
+      { error: "Your employee account is inactive." },
+      { status: 403 }
+    );
+  }
+
+  if (!canUpdateAnnouncement(currentEmployee.role)) {
+    return NextResponse.json(
+      {
+        error:
+          "You are not allowed to update announcements.",
+      },
+      { status: 403 }
     );
   }
 
@@ -218,17 +179,33 @@ export async function PUT(
   return NextResponse.json(updatedAnnouncement);
 }
 
-
 export async function DELETE(
   _request: NextRequest,
   { params }: AnnouncementRouteProps
 ) {
-  const { userId } = await auth();
+  const currentEmployee = await getCurrentEmployee();
 
-  if (!userId) {
+  if (!currentEmployee) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
+    );
+  }
+
+  if (currentEmployee.status !== "active") {
+    return NextResponse.json(
+      { error: "Your employee account is inactive." },
+      { status: 403 }
+    );
+  }
+
+  if (!canDeleteAnnouncement(currentEmployee.role)) {
+    return NextResponse.json(
+      {
+        error:
+          "You are not allowed to delete announcements.",
+      },
+      { status: 403 }
     );
   }
 

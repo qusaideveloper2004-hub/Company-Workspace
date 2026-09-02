@@ -2,9 +2,23 @@ import Link from "next/link";
 // import { getAllAnnouncements } from "@/lib/modules/announcements/data";
 import { getAllAnnouncementsFromDatabase } from "@/lib/modules/announcements/data";
 
+
+import {
+  canCreateAnnouncement,
+} from "@/lib/permissions/announcements";
+
+import { requireActiveEmployee } from "@/lib/require-active-employee";
+
 export default async function AnnouncementsPage() {
   // const announcements = getAllAnnouncements();
+  const currentEmployee = await requireActiveEmployee();
+
   const announcements = await getAllAnnouncementsFromDatabase();
+
+  const canCreate = canCreateAnnouncement(
+    currentEmployee.role
+  );
+
 
   return (
     <div className="p-6">
@@ -20,13 +34,16 @@ export default async function AnnouncementsPage() {
           </p>
         </div>
 
+        {canCreate && (
         <Link
           href="/announcements/new"
           className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
           New Announcement
         </Link>
+        )}
       </div>
+
 
       <div className="mt-5 space-y-3">
         {announcements.map((announcement) => (
@@ -63,5 +80,3 @@ export default async function AnnouncementsPage() {
     </div>
   );
 }
-
-

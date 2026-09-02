@@ -1,12 +1,15 @@
 import type { ReactNode } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
+import { requireActiveEmployee } from "@/lib/require-active-employee";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  await requireActiveEmployee();
+
   return (
     <div className="min-h-screen flex bg-background text-foreground">
       <Sidebar />

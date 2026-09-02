@@ -13,6 +13,8 @@ import {
 
 interface AnnouncementActionsProps {
   announcement: Announcement;
+  canUpdate: boolean;
+  canDelete: boolean;
 }
 
 const priorityOptions: AnnouncementPriority[] = [
@@ -23,8 +25,14 @@ const priorityOptions: AnnouncementPriority[] = [
 
 export default function AnnouncementActions({
   announcement,
+  canUpdate,
+  canDelete,
 }: AnnouncementActionsProps) {
   const router = useRouter();
+
+  if (!canUpdate && !canDelete) {
+    return null;
+  }
 
   async function handlePriorityChange(
     event: React.ChangeEvent<HTMLSelectElement>
@@ -80,13 +88,14 @@ export default function AnnouncementActions({
 
   return (
     <div className="mt-4 flex items-center justify-between rounded-lg border border-border bg-surface p-4">
-      <div className="flex items-center gap-2">
-        <label
-          htmlFor="priority"
-          className="text-sm text-muted"
-        >
-          Priority
-        </label>
+      {canUpdate && (
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="priority"
+            className="text-sm text-muted"
+          >
+            Priority
+          </label>
 
         <select
           id="priority"
@@ -100,14 +109,17 @@ export default function AnnouncementActions({
             </option>
           ))}
         </select>
-      </div>
+        </div>
+      )}
 
-      <button
-        onClick={handleDelete}
-        className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
-      >
-        Delete Announcement
-      </button>
+      {canDelete && (
+        <button
+          onClick={handleDelete}
+          className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
+        >
+          Delete Announcement
+        </button>
+      )}
     </div>
   );
 }

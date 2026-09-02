@@ -5,6 +5,16 @@ import {
 } from "@/lib/modules/announcements/data";
 import AnnouncementActions from "@/components/announcements/AnnouncementActions";
 
+
+
+import {
+  // canCreateAnnouncement,
+  canDeleteAnnouncement,
+  canUpdateAnnouncement,
+} from "@/lib/permissions/announcements";
+
+import { requireActiveEmployee } from "@/lib/require-active-employee";
+
 interface AnnouncementDetailPageProps {
   params: Promise<{
     id: string;
@@ -15,12 +25,16 @@ export default async function AnnouncementDetailPage({
   params,
 }: AnnouncementDetailPageProps) {
   const { id } = await params;
-  
+  const currentEmployee = await requireActiveEmployee();
+  const announcement = await getAnnouncementByIdFromDatabase(id);
 
-  // const announcement = getAnnouncementById(id);
-  const announcement =
-  await getAnnouncementByIdFromDatabase(id);
+  const canUpdate = canUpdateAnnouncement(
+    currentEmployee.role
+  );
 
+  const canDelete = canDeleteAnnouncement(
+    currentEmployee.role
+  );
   if (!announcement) {
     return (
       <div className="p-6">
@@ -76,8 +90,15 @@ export default async function AnnouncementDetailPage({
         </p>
       </div>
 
-       <AnnouncementActions announcement={announcement} />
+      {(canUpdate || canDelete) && (
+        <AnnouncementActions
+          announcement={announcement}
+          canUpdate={canUpdate}
+          canDelete={canDelete}
+        />
+      )}
 
     </div>
   );
 }
+
