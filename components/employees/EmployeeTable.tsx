@@ -9,10 +9,12 @@ import { Employee } from "@/lib/generated/prisma/client";
 
 interface EmployeeTableProps {
   employees: Employee[];
+  canViewDetails: boolean;
 }
 
 export default function EmployeeTable({
   employees,
+  canViewDetails,
 }: EmployeeTableProps) {
 
   const [search, setSearch] = useState("");
@@ -142,12 +144,18 @@ const filteredEmployees = employees.filter(
                   className="border-b border-border last:border-b-0"
                 >
                   <td className="px-4 py-3">
-                    <Link
-                      href={`/employees/${employee.id}`}
-                      className="font-medium text-foreground hover:underline"
-                    >
-                      {employee.name}
-                    </Link>
+                    {canViewDetails ? (
+                      <Link
+                        href={`/employees/${employee.id}`}
+                        className="font-medium text-foreground hover:underline"
+                      >
+                        {employee.name}
+                      </Link>
+                    ) : (
+                      <span className="font-medium text-foreground">
+                        {employee.name}
+                      </span>
+                    )}
                   </td>
 
                   <td className="px-4 py-3 text-sm text-muted">

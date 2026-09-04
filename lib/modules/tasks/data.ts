@@ -1,4 +1,5 @@
 import type {
+  Employee,
   TaskPriority,
   TaskStatus,
 } from "@/lib/generated/prisma/client";
@@ -15,6 +16,11 @@ interface TaskFilters {
   department?: TaskDepartment;
 }
 
+type CurrentEmployeeForTasks = Pick<
+  Employee,
+  "id" | "role" | "department"
+>;
+
 const taskWithEmployee = {
   assignedEmployee: true,
 };
@@ -25,6 +31,42 @@ export async function getAllTasks(filters?: TaskFilters) {
       status: filters?.status,
       priority: filters?.priority,
       department: filters?.department,
+    },
+    include: taskWithEmployee,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+export async function getVisibleTasks(
+  currentEmployee: CurrentEmployeeForTasks,
+  filters?: TaskFilters
+) {
+  if (currentEmployee.role === "admin") {
+    return getAllTasks(filters);
+  }
+
+  if (currentEmployee.role === "manager") {
+    return prisma.task.findMany({
+      where: {
+        status: filters?.status,
+        priority: filters?.priority,
+        department: currentEmployee.department,
+      },
+      include: taskWithEmployee,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
+  return prisma.task.findMany({
+    where: {
+      status: filters?.status,
+      priority: filters?.priority,
+      department: filters?.department,
+      assignedEmployeeId: currentEmployee.id,
     },
     include: taskWithEmployee,
     orderBy: {

@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-import { getAllTasksFromDatabase } from "@/lib/modules/tasks/data";
 import type { TaskStatus } from "@/lib/generated/prisma/client";
+import { requireActiveEmployee } from "@/lib/require-active-employee";
+import { getVisibleTasks } from "@/lib/modules/tasks/data";
+import { canCreateTask } from "@/lib/permissions/tasks";
 
 interface TasksPageProps {
-  searchParams: Promise<{
-    status?: string;
-  }>;
+  searchParams: Promise<{ status?: string }>;
 }
 
 const statusFilters: {
@@ -22,32 +22,30 @@ const statusFilters: {
 export default async function TasksPage({
   searchParams,
 }: TasksPageProps) {
+  const currentEmployee = await requireActiveEmployee();
   const params = await searchParams;
   const status = params.status as TaskStatus | undefined;
-  const tasks = await getAllTasksFromDatabase();
-
-  const filteredTasks = status
-    ? tasks.filter((task) => task.status === status)
-    : tasks;
+  const tasks = await getVisibleTasks(currentEmployee, { status });
+  const canCreate = canCreateTask(currentEmployee);
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold">Tasks</h1>
-
           <p className="mt-1 text-sm text-muted">
-            {filteredTasks.length} task
-            {filteredTasks.length !== 1 && "s"}
+            {tasks.length} task{tasks.length !== 1 && "s"}
           </p>
         </div>
 
-        <Link
-          href="/tasks/new"
-          className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
-        >
-          New Task
-        </Link>
+        {canCreate && (
+          <Link
+            href="/tasks/new"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          >
+            New Task
+          </Link>
+        )}
       </div>
 
       <div className="mt-5 flex gap-2">
@@ -75,13 +73,13 @@ export default async function TasksPage({
       </div>
 
       <div className="mt-5 overflow-hidden rounded-lg border border-border bg-surface">
-        {filteredTasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <p className="p-8 text-center text-sm text-muted">
             No tasks match this filter.
           </p>
         ) : (
           <ul className="divide-y divide-border">
-            {filteredTasks.map((task) => (
+            {tasks.map((task) => (
               <li key={task.id}>
                 <Link
                   href={`/tasks/${task.id}`}
@@ -91,7 +89,6 @@ export default async function TasksPage({
                     <p className="truncate text-sm font-medium text-foreground">
                       {task.title}
                     </p>
-
                     <p className="mt-0.5 text-xs text-muted">
                       {task.assignedEmployee.name} · {task.department}
                     </p>
@@ -101,7 +98,6 @@ export default async function TasksPage({
                     <span className="rounded-full border px-2.5 py-1 text-xs font-medium">
                       {task.priority}
                     </span>
-
                     <span className="rounded-full px-2.5 py-1 text-xs font-medium">
                       {task.status.replace("_", " ")}
                     </span>

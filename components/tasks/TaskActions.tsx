@@ -1,14 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-// import { Task, TaskStatus } from "@/lib/types/task";
-import {
+
+import type {
   Task,
   TaskStatus,
 } from "@/lib/generated/prisma/client";
 
 interface TaskActionsProps {
   task: Task;
+  canUpdate: boolean;
+  canDelete: boolean;
 }
 
 const statusOptions: TaskStatus[] = [
@@ -17,23 +19,29 @@ const statusOptions: TaskStatus[] = [
   "completed",
 ];
 
-export default function TaskActions({ task }: TaskActionsProps) {
+export default function TaskActions({
+  task,
+  canUpdate,
+  canDelete,
+}: TaskActionsProps) {
   const router = useRouter();
 
   async function handleStatusChange(
     event: React.ChangeEvent<HTMLSelectElement>
   ) {
-    const newStatus = event.target.value as TaskStatus;
-
-    await fetch(`/api/tasks/${task.id}`, {
+    const response = await fetch(`/api/tasks/${task.id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        status: newStatus,
+        status: event.target.value as TaskStatus,
       }),
     });
+
+    if (!response.ok) {
+      const data = await response.json();
+      alert(data.error ?? "Failed to update task status.");
+      return;
+    }
 
     router.refresh();
   }
@@ -45,40 +53,55 @@ export default function TaskActions({ task }: TaskActionsProps) {
 
     if (!confirmed) return;
 
-    await fetch(`/api/tasks/${task.id}`, {
+    const response = await fetch(`/api/tasks/${task.id}`, {
       method: "DELETE",
     });
 
+    if (!response.ok) {
+      const data = await response.json();
+      alert(data.error ?? "Failed to delete this task.");
+      return;
+    }
+
     router.push("/tasks");
+    router.refresh();
+  }
+
+  if (!canUpdate && !canDelete) {
+    return null;
   }
 
   return (
     <div className="mt-4 flex items-center justify-between rounded-lg border border-border bg-surface p-4">
-      <div className="flex items-center gap-2">
-        <label htmlFor="status" className="text-sm text-muted">
-          Status
-        </label>
+      {canUpdate && (
+        <div className="flex items-center gap-2">
+          <label htmlFor="status" className="text-sm text-muted">
+            Status
+          </label>
+          <select
+            id="status"
+            value={task.status}
+            onChange={handleStatusChange}
+            className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm"
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status.replace("_", " ")}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
-        <select
-          id="status"
-          value={task.status}
-          onChange={handleStatusChange}
-          className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm"
+      {canDelete && (
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
         >
-          {statusOptions.map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button
-        onClick={handleDelete}
-        className="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
-      >
-        Delete Task
-      </button>
+          Delete Task
+        </button>
+      )}
     </div>
   );
 }

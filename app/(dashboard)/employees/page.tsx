@@ -1,23 +1,32 @@
+import EmployeeTable from "@/components/employees/EmployeeTable";
+import Link from "next/link";
+import { requireActiveEmployee } from "@/lib/require-active-employee";
 import { getAllEmployees } from "@/lib/modules/employees/data";
 
-import EmployeeTable from "@/components/employees/EmployeeTable";
-// import EmployeeAction from "@/components/employees/EmployeeAction";
-
-import Link from "next/link";
-
 export default async function EmployeesPage() {
+  const currentEmployee = await requireActiveEmployee();
   const employees = await getAllEmployees();
+
+  const canCreateEmployee =
+    currentEmployee.role === "admin" ||
+    currentEmployee.role === "manager";
+
+  const canViewEmployeeDetails =
+    currentEmployee.role === "admin" ||
+    currentEmployee.role === "manager";
 
   return (
     <div className="space-y-6">
-      <div>
-        <Link
-          href="/employees/new"
-          className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
-        >
-          Add Employee
-        </Link>
-      </div>
+      {canCreateEmployee && (
+        <div>
+          <Link
+            href="/employees/new"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          >
+            Add Employee
+          </Link>
+        </div>
+      )}
 
       <div>
         <h1 className="text-2xl font-semibold text-foreground">Employees</h1>
@@ -27,9 +36,10 @@ export default async function EmployeesPage() {
         </p>
       </div>
 
-      <EmployeeTable employees={employees} />
-
-      {/* <EmployeeAction employee={employees[0]} /> */}
+      <EmployeeTable
+        employees={employees}
+        canViewDetails={canViewEmployeeDetails}
+      />
     </div>
   );
 }

@@ -1,34 +1,148 @@
+// "use client";
+
+// import { useRouter } from "next/navigation";
+// // import {Employee,EmployeeStatus,} from "@/lib/types/employee";
+// import { Employee, EmployeeStatus } from "@/lib/generated/prisma/client";
+// interface EmployeeActionsProps {
+//   employee: Employee;
+// }
+
+// const statusOptions: EmployeeStatus[] = ["active", "inactive"];
+
+// export default function EmployeeActions({ employee }: EmployeeActionsProps) {
+//   const router = useRouter();
+
+//   async function handleStatusChange(
+//     event: React.ChangeEvent<HTMLSelectElement>,
+//   ) {
+//     const newStatus = event.target.value as EmployeeStatus;
+
+//     const response = await fetch(`/api/employees/${employee.id}`, {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         status: newStatus,
+//       }),
+//     });
+
+//     if (!response.ok) {
+//       alert("Failed to update employee status.");
+//       return;
+//     }
+
+//     router.refresh();
+//   }
+
+//   async function handleDelete() {
+//     const confirmed = window.confirm(
+//       `Delete ${employee.name}? This action cannot be undone.`,
+//     );
+
+//     if (!confirmed) {
+//       return;
+//     }
+
+//     const response = await fetch(`/api/employees/${employee.id}`, {
+//       method: "DELETE",
+//     });
+
+//     if (!response.ok) {
+//       alert("Failed to delete employee.");
+//       return;
+//     }
+
+//     router.push("/employees");
+//     router.refresh();
+//   }
+
+//   return (
+//     <div className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-surface p-4">
+//       <label htmlFor="status" className="text-sm text-muted">
+//         Status
+//       </label>
+
+//       <select
+//         id="status"
+//         value={employee.status}
+//         onChange={handleStatusChange}
+//         className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm"
+//       >
+//         {statusOptions.map((status) => (
+//           <option key={status} value={status}>
+//             {status}
+//           </option>
+//         ))}
+//       </select>
+
+//       <button
+//         type="button"
+//         onClick={handleDelete}
+//         className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
+//       >
+//         Delete Employee
+//       </button>
+//     </div>
+//   );
+// }
+
+
+
 "use client";
 
 import { useRouter } from "next/navigation";
-// import {Employee,EmployeeStatus,} from "@/lib/types/employee";
-import { Employee, EmployeeStatus } from "@/lib/generated/prisma/client";
+
+import {
+  Employee,
+  EmployeeStatus,
+} from "@/lib/generated/prisma/client";
+
 interface EmployeeActionsProps {
   employee: Employee;
+
+  // هذه القيم تأتي من صفحة Server بعد فحص الدور والقسم.
+  canUpdate: boolean;
+  canDelete: boolean;
 }
 
-const statusOptions: EmployeeStatus[] = ["active", "inactive"];
+const statusOptions: EmployeeStatus[] = [
+  "active",
+  "inactive",
+];
 
-export default function EmployeeActions({ employee }: EmployeeActionsProps) {
+export default function EmployeeAction({
+  employee,
+  canUpdate,
+  canDelete,
+}: EmployeeActionsProps) {
   const router = useRouter();
 
   async function handleStatusChange(
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) {
     const newStatus = event.target.value as EmployeeStatus;
 
-    const response = await fetch(`/api/employees/${employee.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        status: newStatus,
-      }),
-    });
+    const response = await fetch(
+      `/api/employees/${employee.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: newStatus,
+        }),
+      }
+    );
 
     if (!response.ok) {
-      alert("Failed to update employee status.");
+      const data = await response.json();
+
+      alert(
+        data.error ??
+          "Failed to update employee status."
+      );
       return;
     }
 
@@ -37,19 +151,27 @@ export default function EmployeeActions({ employee }: EmployeeActionsProps) {
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      `Delete ${employee.name}? This action cannot be undone.`,
+      `Delete ${employee.name}? This action cannot be undone.`
     );
 
     if (!confirmed) {
       return;
     }
 
-    const response = await fetch(`/api/employees/${employee.id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `/api/employees/${employee.id}`,
+      {
+        method: "DELETE",
+      }
+    );
 
     if (!response.ok) {
-      alert("Failed to delete employee.");
+      const data = await response.json();
+
+      alert(
+        data.error ??
+          "Failed to delete employee."
+      );
       return;
     }
 
@@ -57,32 +179,48 @@ export default function EmployeeActions({ employee }: EmployeeActionsProps) {
     router.refresh();
   }
 
+  // إذا لم يملك المستخدم تعديلًا ولا حذفًا، لا نعرض صندوق Actions فارغًا.
+  if (!canUpdate && !canDelete) {
+    return null;
+  }
+
   return (
     <div className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-surface p-4">
-      <label htmlFor="status" className="text-sm text-muted">
-        Status
-      </label>
+      {/* يظهر تغيير الحالة فقط لمن يملك صلاحية التعديل. */}
+      {canUpdate && (
+        <>
+          <label
+            htmlFor="status"
+            className="text-sm text-muted"
+          >
+            Status
+          </label>
 
-      <select
-        id="status"
-        value={employee.status}
-        onChange={handleStatusChange}
-        className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm"
-      >
-        {statusOptions.map((status) => (
-          <option key={status} value={status}>
-            {status}
-          </option>
-        ))}
-      </select>
+          <select
+            id="status"
+            value={employee.status}
+            onChange={handleStatusChange}
+            className="rounded-md border border-border bg-background px-2.5 py-1.5 text-sm"
+          >
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
 
-      <button
-        type="button"
-        onClick={handleDelete}
-        className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
-      >
-        Delete Employee
-      </button>
+      {/* يظهر الحذف للـAdmin فقط. */}
+      {canDelete && (
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
+        >
+          Delete Employee
+        </button>
+      )}
     </div>
   );
 }
