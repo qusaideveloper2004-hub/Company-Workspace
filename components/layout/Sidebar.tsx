@@ -126,7 +126,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto rounded-2xl bg-gray-50 p-4 text-xs text-muted">
+      <div className="mt-auto rounded-2xl bg-background p-4 text-xs text-muted">
         v0.1 · Tickets module active
       </div>
     </aside>

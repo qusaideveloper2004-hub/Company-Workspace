@@ -2,3 +2,6 @@ node_modules/
 .env
 /lib/generated/prisma
 .next/
+dev-server.log
+dev-server-error.log
+tsconfig.tsbuildinfo

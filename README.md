@@ -1,103 +1,99 @@
 # Company Workspace
 
-An internal company workspace for managing employees, tasks, support tickets, announcements, company settings, and reports.
+An internal company portal for managing employees, support tickets, tasks, announcements, company settings, and reports.
 
-Built with Next.js, TypeScript, Prisma, Neon PostgreSQL, and Clerk authentication.
+It uses role-based access control so that admins, managers, and employees only see and perform the actions allowed for their role and department.
 
 ## Live Demo
 
-https://company-workspace-git-main-qusai-e-project1.vercel.app/
-
-<!-- Add the deployed project link here. -->
+[Open the live demo](https://company-workspace-beta.vercel.app/)
 
 ## Screenshots
 
-![Dashboard](./Images-Project/dashboard.png)
+<!-- Add screenshots here after uploading image files to Images-Project/. -->
 
-![Employees](./Images-Project/Employees.png)
-
-![Tasks](./Images-Project/Tasks.png)
-
-![Tickets](./Images-Project/Tickets.png)
+<!-- Example: ![Dashboard](./Images-Project/dashboard.png) -->
 
 ## Features
 
-- Employee management with departments, roles, and account status.
-- Task management: create, assign, update status, and delete tasks.
-- Ticket management linked automatically to the signed-in employee.
-- Company announcements with priorities.
-- Company settings and individual user preferences.
-- Dashboard and reports based on real database data.
-- Clerk authentication linked to employee records in Neon.
-- Role-based task permissions for `admin`, `manager`, and `employee` roles.
+- Clerk authentication linked to Employee records in Neon PostgreSQL.
+- Protected dashboard access for linked, active employees only.
+- Employee management with role, department, and account-status rules.
+- Ticket management with role-aware visibility and automatic creator linking.
+- Task management with department-aware assignment and permissions.
+- Announcement creation and moderation rules for admins and managers.
+- Company defaults for ticket priority and task status.
+- Company settings for admins and personal preferences for each employee.
+- Persisted light, dark, and system theme preferences.
+- Role-aware dashboard and reports based on visible data.
+- Responsive navigation for desktop and mobile screens.
 
-## Task Permissions
+## Permission Summary
 
-| Action             | Admin        | Manager                       | Employee            |
-| ------------------ | ------------ | ----------------------------- | ------------------- |
-| Create tasks       | Any employee | Employees in their department | Not allowed         |
-| Update task status | Any task     | Tasks in their department     | Only assigned tasks |
-| Delete tasks       | Any task     | Tasks in their department     | Not allowed         |
+| Module | Admin | Manager | Employee |
+| --- | --- | --- | --- |
+| Employees | Full management | Create/update eligible employees in own department; no delete | View list only |
+| Tickets | Manage all | Manage own-department tickets | Manage only own tickets |
+| Tasks | Manage all | Manage own-department tasks | Update only assigned task status |
+| Announcements | Create, update, delete | Create and update | Read only |
+| Company Settings | Manage | View personal preferences | View personal preferences |
 
-Inactive employees and Clerk accounts that are not linked to an employee record cannot create, update, or delete tasks.
+Inactive employees and Clerk accounts without a linked Employee record cannot access the workspace or complete protected operations.
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org/) 16
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Prisma ORM](https://www.prisma.io/)
-- [Neon PostgreSQL](https://neon.tech/)
-- [Clerk](https://clerk.com/)
-- [Recharts](https://recharts.org/)
+- [Next.js](https://nextjs.org/) 16 with the App Router
+- [React](https://react.dev/) 19 and [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Prisma ORM](https://www.prisma.io/) with [Neon PostgreSQL](https://neon.tech/)
+- [Clerk](https://clerk.com/) for authentication
+- [next-themes](https://github.com/pacocoursey/next-themes) for client theme switching
+- [Recharts](https://recharts.org/) for dashboard charts
 
 ## Project Structure
 
 ```text
 app/
-├── (dashboard)/       # Dashboard pages and shared dashboard layout
-├── api/               # Route handlers and protected server operations
-└── layout.tsx         # Root layout and Clerk provider
+├── (dashboard)/          # Protected pages and shared dashboard layout
+├── api/                  # Protected route handlers for mutations and data access
+├── sign-in/              # Clerk sign-in route
+└── unauthorized/         # Access-denied page
 
 components/
-├── announcements/
-├── dashboard/
-├── employees/
-├── layout/
-├── settings/
-├── tasks/
-└── tickets/
+├── announcements/        # Announcement forms and actions
+├── dashboard/            # Dashboard chart
+├── employees/            # Employee form, table, and actions
+├── layout/               # Sidebar and responsive navigation
+├── settings/             # Settings form
+├── tasks/                # Task form and actions
+├── theme/                # Theme provider and saved-theme synchronisation
+└── tickets/              # Ticket form and actions
 
 lib/
-├── modules/            # Prisma data functions grouped by feature
-├── types/              # Shared TypeScript types
-├── current-employee.ts # Clerk-to-Employee linking helper
-└── prisma.ts           # Prisma client setup
+├── modules/              # Prisma data access functions grouped by feature
+├── permissions/          # Shared authorization rules
+├── current-employee.ts   # Clerk-to-Employee linking helper
+├── require-active-employee.ts # Protected-page guard
+└── prisma.ts             # Prisma client configuration
 
 prisma/
-├── migrations/         # Database migration history
-└── schema.prisma       # Database models and enums
+├── migrations/           # Database migration history
+└── schema.prisma         # Database models and enums
 ```
 
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Clone and install
 
 ```bash
 git clone git@github.com:qusaideveloper2004-hub/Company-Workspace.git
 cd Company-Workspace
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
 ```
 
-### 3. Create environment variables
+### 2. Add environment variables
 
-Create a `.env` file in the project root:
+Create `.env` in the project root:
 
 ```env
 DATABASE_URL="your_neon_database_url"
@@ -105,18 +101,13 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
 CLERK_SECRET_KEY="your_clerk_secret_key"
 ```
 
-Never commit `.env` to GitHub.
+Never commit `.env` or any secret values.
 
-### 4. Apply database migrations and generate Prisma Client
+### 3. Prepare the database and run the app
 
 ```bash
 npx prisma migrate deploy
 npx prisma generate
-```
-
-### 5. Start the development server
-
-```bash
 npm run dev
 ```
 
@@ -125,43 +116,32 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Available Scripts
 
 ```bash
-npm run dev       # Start the development server
-npm run build     # Create a production build
-npm run start     # Start the production server
+npm run dev       # Start local development
+npm run build     # Generate Prisma Client and create a production build
+npm run start     # Run the production build locally
 npm run lint      # Run ESLint
-npx prisma generate
-npx prisma migrate deploy
 ```
+
+## Testing and Deployment
+
+See [docs/QA_CHECKLIST.md](./docs/QA_CHECKLIST.md) for the role-permission test matrix and Vercel production smoke test.
+
+For Vercel, configure these Production environment variables:
+
+- `DATABASE_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
 
 ## Database Models
 
-The project uses PostgreSQL through Neon with the following main models:
-
 - `Employee`
-- `Task`
 - `Ticket`
+- `Task`
 - `Announcement`
 - `CompanySettings`
 - `UserPreference`
 
-`Employee.clerkUserId` connects a Clerk account to its matching employee record in the database.
-
-## Current Development Status
-
-Completed:
-
-- Database migration from static data to Neon PostgreSQL.
-- Prisma data layer and API routes for core modules.
-- Clerk-to-Employee linking.
-- Task authorization for roles and departments.
-
-Planned improvements:
-
-- Authorization for Tickets, Announcements, Employees, and Settings.
-- Zod validation for API request data.
-- Applying saved theme preferences to the UI.
-- More detailed reports.
-- Production deployment.
+`Employee.clerkUserId` connects a Clerk account to its Employee record.
 
 ## Author
 
