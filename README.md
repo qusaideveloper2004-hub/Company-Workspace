@@ -4,6 +4,16 @@ An internal company portal for managing employees, support tickets, tasks, annou
 
 It uses role-based access control so that admins, managers, and employees only see and perform the actions allowed for their role and department.
 
+## Demo Account
+
+Use this shared account to explore the protected workspace:
+
+- Email: `companyworkspace@gmail.com`
+- Password: `DemoTestApp2004`
+
+> This is a shared demo account with limited Admin permissions.
+> Do not add sensitive or personal information.
+
 ## Live Demo
 
 [Open the live demo](https://company-workspace-beta.vercel.app/)
@@ -12,7 +22,21 @@ It uses role-based access control so that admins, managers, and employees only s
 
 <!-- Add screenshots here after uploading image files to Images-Project/. -->
 
-<!-- Example: ![Dashboard](./Images-Project/dashboard.png) -->
+![Dashboard - Light Theme](./Images-Project/dashboard-light.png)
+
+![Dashboard - Dark Theme](./Images-Project/dashboard-dark.png)
+
+![Employees](./Images-Project/employees.png)
+
+![Tickets](./Images-Project/tickets.png)
+
+![Tasks](./Images-Project/tasks.png)
+
+![Announcements](./Images-Project/announcements.png)
+
+![Reports](./Images-Project/reports.png)
+
+![Settings](./Images-Project/settings.png)
 
 ## Features
 
@@ -30,13 +54,13 @@ It uses role-based access control so that admins, managers, and employees only s
 
 ## Permission Summary
 
-| Module | Admin | Manager | Employee |
-| --- | --- | --- | --- |
-| Employees | Full management | Create/update eligible employees in own department; no delete | View list only |
-| Tickets | Manage all | Manage own-department tickets | Manage only own tickets |
-| Tasks | Manage all | Manage own-department tasks | Update only assigned task status |
-| Announcements | Create, update, delete | Create and update | Read only |
-| Company Settings | Manage | View personal preferences | View personal preferences |
+| Module           | Admin                  | Manager                                                       | Employee                         |
+| ---------------- | ---------------------- | ------------------------------------------------------------- | -------------------------------- |
+| Employees        | Full management        | Create/update eligible employees in own department; no delete | View list only                   |
+| Tickets          | Manage all             | Manage own-department tickets                                 | Manage only own tickets          |
+| Tasks            | Manage all             | Manage own-department tasks                                   | Update only assigned task status |
+| Announcements    | Create, update, delete | Create and update                                             | Read only                        |
+| Company Settings | Manage                 | View personal preferences                                     | View personal preferences        |
 
 Inactive employees and Clerk accounts without a linked Employee record cannot access the workspace or complete protected operations.
 
