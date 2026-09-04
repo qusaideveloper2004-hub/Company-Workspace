@@ -26,11 +26,11 @@ Use this shared account to explore the protected workspace:
 
 ![Dashboard - Dark Theme](./Images-Project/dashboard-dark.png)
 
-![Employees](./Images-Project/employees.png)
+![Employees](./Images-Project/Employees.png)
 
-![Tickets](./Images-Project/tickets.png)
+![Tickets](./Images-Project/Tickets.png)
 
-![Tasks](./Images-Project/tasks.png)
+![Tasks](./Images-Project/Tasks.png)
 
 ![Announcements](./Images-Project/announcements.png)
 
