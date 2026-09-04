@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 import type {
   CompanySettings,
@@ -32,6 +33,7 @@ export default function SettingsForm({
   initialPreferences,
   canManageCompany,
 }: SettingsFormProps) {
+  const { setTheme } = useTheme();
   const [company, setCompany] = useState<CompanySettingsInput>({
     companyName: companySettings.companyName,
     companyEmail: companySettings.companyEmail,
@@ -74,6 +76,7 @@ export default function SettingsForm({
       return;
     }
 
+    setTheme(preferences.theme);
     alert("Preferences updated.");
   }
 

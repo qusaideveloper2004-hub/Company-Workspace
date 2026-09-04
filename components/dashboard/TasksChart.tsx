@@ -57,6 +57,8 @@ export default function TasksChart({
 
             <Bar
               dataKey="count"
+              fill="#3b82f6"
+              barSize={56}
               radius={[6, 6, 0, 0]}
               label
             />

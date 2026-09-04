@@ -7,7 +7,7 @@
   margin: 0;
   padding: 0;
 }
-
+/* 
 :root {
   --background: #f6f6f4;
   --foreground: #1c1e21;
@@ -22,6 +22,61 @@
   --surface: #ffffff;
   --border: #e4e4e0;
   --muted: #6b7280;
+}
+
+.dark {
+  --background: #14171f;
+  --foreground: #f3f4f6;
+
+  --sidebar-bg: #0f1117;
+  --sidebar-text: #aeb6c3;
+  --sidebar-text-active: #ffffff;
+
+  --accent: #818cf8;
+  --accent-soft: #272c59;
+
+  --surface: #1d212b;
+  --border: #343b4a;
+  --muted: #a7afbd;
+} */
+
+
+
+
+:root {
+  --background: #fafafa;
+  --foreground: #18181b;
+  --sidebar-bg: #18181b;
+  --sidebar-text: #a1a1aa;
+  --sidebar-text-active: #ffffff;
+  --accent: #0ea5e9; /* سماوي احترافي */
+  --accent-soft: #e0f2fe;
+  --surface: #ffffff;
+  --border: #e4e4e7;
+  --muted: #71717a;
+}
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --sidebar-bg: #000000;
+  --sidebar-text: #71717a;
+  --sidebar-text-active: #ffffff;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.15);
+  --surface: #18181b;
+  --border: #27272a;
+  --muted: #a1a1aa;
+}
+
+
+
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
 }
 
 html,

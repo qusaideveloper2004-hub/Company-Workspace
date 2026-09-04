@@ -109,7 +109,7 @@ export default function Sidebar() {
               className={`flex items-center justify-between rounded-xl px-4 py-3 transition-colors ${
                 isActive
                   ? "bg-accent-soft text-accent"
-                  : "text-foreground hover:bg-gray-100"
+                  : "text-foreground hover:bg-accent-soft"
               }`}
             >
               <span className="flex items-center gap-3">

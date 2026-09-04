@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Company Workspace",
@@ -10,10 +11,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ClerkProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProvider>
+      </body>
       </html>
-    </ClerkProvider>
   );
 }
