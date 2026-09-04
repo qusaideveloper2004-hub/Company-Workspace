@@ -1,20 +1,17 @@
 import SettingsForm from "@/components/settings/SettingsForm";
-import { getAllEmployees } from "@/lib/modules/employees/data";
+import { requireActiveEmployee } from "@/lib/require-active-employee";
 import {
   getCompanySettings,
   getUserPreferences,
 } from "@/lib/modules/settings/data";
 
 export default async function SettingsPage() {
-  const [companySettings, employees] = await Promise.all([
-    getCompanySettings(),
-    getAllEmployees(),
-  ]);
+  const currentEmployee = await requireActiveEmployee();
 
-  const selectedEmployee = employees[0];
-  const initialPreferences = selectedEmployee
-    ? await getUserPreferences(selectedEmployee.id)
-    : null;
+  const [companySettings, initialPreferences] = await Promise.all([
+    getCompanySettings(),
+    getUserPreferences(currentEmployee.id),
+  ]);
 
   return (
     <div className="p-6">
@@ -31,12 +28,8 @@ export default async function SettingsPage() {
       <div className="mt-6">
         <SettingsForm
           companySettings={companySettings}
-          employees={employees.map((employee) => ({
-            id: employee.id,
-            name: employee.name,
-            email: employee.email,
-          }))}
           initialPreferences={initialPreferences}
+          canManageCompany={currentEmployee.role === "admin"}
         />
       </div>
     </div>

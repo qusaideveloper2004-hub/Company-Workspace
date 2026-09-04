@@ -90,12 +90,16 @@ export async function getTaskByIdFromDatabase(id: string) {
   return getTaskById(id);
 }
 
-export async function createTask(input: CreateTaskInput) {
+export async function createTask(
+  input: CreateTaskInput,
+  initialStatus: TaskStatus
+) {
   return prisma.task.create({
     data: {
       title: input.title,
       description: input.description,
       priority: input.priority,
+      status: initialStatus,
       department: input.department,
       assignedEmployeeId: input.assignedEmployeeId,
       dueDate: new Date(input.dueDate),

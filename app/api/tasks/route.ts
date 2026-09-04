@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getCurrentEmployee } from "@/lib/current-employee";
 import { getEmployeeById } from "@/lib/modules/employees/data";
+import { getCompanySettings } from "@/lib/modules/settings/data";
 import {
   createTask,
   getVisibleTasks,
@@ -98,7 +99,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const task = await createTask(body);
+  const companySettings = await getCompanySettings();
+
+  const task = await createTask(
+    body,
+    companySettings.defaultTaskStatus
+  );
 
   return NextResponse.json(task, { status: 201 });
 }

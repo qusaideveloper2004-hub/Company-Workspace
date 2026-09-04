@@ -82,6 +82,15 @@
 import { prisma } from "@/lib/prisma";
 import { UpdateEmployeeInput } from "@/lib/types/employee";
 
+// هنا استوردت شكل الامبلوي 
+import type { Employee } from "@/lib/generated/prisma/client";
+//  ما معنى Pick؟
+//معناه: “خذ من شكل Employee ثلاثة حقول فقط”.
+type CurrentEmployeeForEmployees = Pick<
+  Employee,
+  "id" | "role" | "department"
+>;
+
 export async function getAllEmployees() {
   return prisma.employee.findMany({
     orderBy: {
@@ -89,6 +98,38 @@ export async function getAllEmployees() {
     },
   });
 }
+
+// دالة getVisibleEmployees ترجع قائمة الموظفين التي يمكن للموظف الحالي رؤيتها بناءً على دوره وقسمه.
+
+export async function getVisibleEmployees(
+  currentEmployee: CurrentEmployeeForEmployees
+) {
+  // الـAdmin يرى جميع موظفي الشركة.
+  if (currentEmployee.role === "admin") {
+    return getAllEmployees();
+  }
+
+  // الـManager يرى موظفي قسمه فقط.
+  if (currentEmployee.role === "manager") {
+    return prisma.employee.findMany({
+      where: {
+        department: currentEmployee.department,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
+  // الـEmployee العادي يرى سجله هو فقط.
+  return prisma.employee.findMany({
+    where: {
+      id: currentEmployee.id,
+    },
+  });
+}
+
+// نهاية الدالة getVisibleEmployees
 
 export async function getEmployeeById(id: string) {
   return prisma.employee.findUnique({
