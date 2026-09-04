@@ -25,16 +25,22 @@ export default async function AnnouncementDetailPage({
   params,
 }: AnnouncementDetailPageProps) {
   const { id } = await params;
-  const currentEmployee = await requireActiveEmployee();
-  const announcement = await getAnnouncementByIdFromDatabase(id);
+  
 
-  const canUpdate = canUpdateAnnouncement(
-    currentEmployee.role
-  );
+  // const announcement = getAnnouncementById(id);
+  const announcement =
+  await getAnnouncementByIdFromDatabase(id);
 
-  const canDelete = canDeleteAnnouncement(
-    currentEmployee.role
-  );
+
+const currentEmployee = await requireActiveEmployee();
+
+const canUpdate = canUpdateAnnouncement(
+  currentEmployee.role
+);
+
+const canDelete = canDeleteAnnouncement(
+  currentEmployee.role
+);
   if (!announcement) {
     return (
       <div className="p-6">
@@ -84,19 +90,18 @@ export default async function AnnouncementDetailPage({
         <h2 className="text-sm font-medium text-foreground">
           Announcement
         </h2>
-
+ان
         <p className="mt-2 text-sm leading-6 text-muted">
           {announcement.content}
         </p>
       </div>
 
-      {(canUpdate || canDelete) && (
-        <AnnouncementActions
+       {/* <AnnouncementActions announcement={announcement} /> */}
+       <AnnouncementActions
           announcement={announcement}
           canUpdate={canUpdate}
           canDelete={canDelete}
-        />
-      )}
+      />
 
     </div>
   );

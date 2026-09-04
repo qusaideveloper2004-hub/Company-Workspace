@@ -10,9 +10,9 @@ Use this shared account to explore the protected workspace:
 
 - Email: `companyworkspace@gmail.com`
 - Password: `DemoTestApp2004`
-
-> This is a shared demo account with limited Admin permissions.
-> Do not add sensitive or personal information.
+  git status
+  > This is a shared demo account with limited Admin permissions.
+  > Do not add sensitive or personal information.
 
 ## Live Demo
 
